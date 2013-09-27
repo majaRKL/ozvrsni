@@ -19,7 +19,7 @@ int main( int argc, char** argv )
 	znak2 = imread ("roi/02_roi.png");
 	znak3 = imread ("roi/03_roi.png");
 	znak4 = imread ("roi/04_roi.png");
-	cvtColor(znak1, znak1, CV_BGR2GRAY);
+	cvtColor (znak2, znak2, CV_BGR2GRAY);
 	
 	cap >> frame;
 	rect = Rect (600, 150, 480, 120);
@@ -28,7 +28,7 @@ int main( int argc, char** argv )
 	int resultRows, resultCols;
 	resultRows = roi.rows - znak1.rows + 1;
 	resultCols = roi.cols - znak1.cols + 1;
-	results.create( resultRows, resultCols, CV_32FC1);
+	results.create (resultRows, resultCols, CV_32FC1);
 	
 	//namedWindow("frame",1);
 	
@@ -42,11 +42,13 @@ int main( int argc, char** argv )
         roi = frame(rect);
         cvtColor(roi, groi, CV_BGR2GRAY);
         
-        matchTemplate(groi, znak1, results, 5);
-        normalize(results, results, 0, 1, NORM_MINMAX, -1);
-        threshold(results, results, 0.8, 1, THRESH_BINARY);
-		minMaxLoc(results, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
-		rectangle( groi, maxLoc, Point( maxLoc.x + znak1.cols , maxLoc.y + znak1.rows ), Scalar::all(0), 2, 8, 0 );
+        matchTemplate (groi, znak2, results, 5);
+        normalize (results, results, 0, 1, NORM_MINMAX, -1);
+        //threshold (results, results, 0.8, 1, THRESH_BINARY);
+		minMaxLoc (results, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
+		if (maxVal > 0.89 )
+		rectangle (groi, maxLoc, Point( maxLoc.x + znak2.cols, 
+					maxLoc.y + znak2.rows), Scalar::all(0), 2, 8, 0 );
         imshow("groi", groi);
         imshow("results", results);
         
