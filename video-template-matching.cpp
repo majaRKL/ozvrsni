@@ -34,7 +34,7 @@ int main( int argc, char** argv )
 	
 	double minVal; double maxVal; 
 	Point minLoc; Point maxLoc; Point matchLoc;
-    
+    int n = 0;
     for(;;)
     {        
         cap >> frame;              
@@ -46,9 +46,14 @@ int main( int argc, char** argv )
         normalize (results, results, 0, 1, NORM_MINMAX, -1);
         //threshold (results, results, 0.8, 1, THRESH_BINARY);
 		minMaxLoc (results, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
-		if (maxVal > 0.89 )
-		rectangle (groi, maxLoc, Point( maxLoc.x + znak2.cols, 
-					maxLoc.y + znak2.rows), Scalar::all(0), 2, 8, 0 );
+		if (maxVal > 0.85) {
+			n++;
+			if (n > 3) {
+			rectangle (groi, maxLoc, Point( maxLoc.x + znak2.cols, 
+					maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
+			n = 0;
+			}
+		}
         imshow("groi", groi);
         imshow("results", results);
         
