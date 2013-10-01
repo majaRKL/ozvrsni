@@ -2,9 +2,14 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
 #include <stdio.h>
+#include <math.h>
 
 using namespace std;
 using namespace cv;
+
+int calcPointDist (Point maxLoc, Point prevMaxLoc);
+
+Point minLoc; Point maxLoc; Point prevMaxLoc;
 
 int main( int argc, char** argv )
 {
@@ -29,12 +34,15 @@ int main( int argc, char** argv )
 	resultRows = roi.rows - znak1.rows + 1;
 	resultCols = roi.cols - znak1.cols + 1;
 	results.create (resultRows, resultCols, CV_32FC1);
-	
+
+	double minVal; double maxVal; 
+	cvtColor(roi, groi, CV_BGR2GRAY);        
+    matchTemplate (groi, znak2, results, 5);
+    normalize (results, results, 0, 1, NORM_MINMAX, -1);
+    minMaxLoc (results, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
+    prevMaxLoc = maxLoc;
 	//namedWindow("frame",1);
 	
-	double minVal; double maxVal; 
-	Point minLoc; Point maxLoc; Point matchLoc;
-    int n = 0;
     for(;;)
     {        
         cap >> frame;              
@@ -46,14 +54,24 @@ int main( int argc, char** argv )
         normalize (results, results, 0, 1, NORM_MINMAX, -1);
         //threshold (results, results, 0.8, 1, THRESH_BINARY);
 		minMaxLoc (results, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
+		
 		if (maxVal > 0.85) {
-			n++;
-			if (n > 3) {
+			int dist = calcPointDist (maxLoc, prevMaxLoc);  
+			if (dist > 1) {
+				prevMaxLoc = maxLoc;	
+			}
+			else {
 			rectangle (groi, maxLoc, Point( maxLoc.x + znak2.cols, 
 					maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
-			n = 0;
-			}
+			prevMaxLoc = maxLoc;
 		}
+		cout << dist << endl;
+		}
+		/*
+		 * Nova ideja:
+		 * Usporedivat proslu i trenutnu maxLoc ako je razlika vec od
+		 * npr 20 pixela na crtati rectangle 
+		 */
         imshow("groi", groi);
         imshow("results", results);
         
@@ -61,3 +79,13 @@ int main( int argc, char** argv )
     }
     return 0;
 }
+
+int calcPointDist (Point maxLoc, Point prevMaxLoc)
+{
+	int dist = 0;
+	dist = sqrt ((maxLoc.x - prevMaxLoc.x) * (maxLoc.x - prevMaxLoc.x) +
+				 (maxLoc.y - prevMaxLoc.y) * (maxLoc.y - prevMaxLoc.y));	
+	cout << dist << endl;
+	return dist;
+}
+
