@@ -9,6 +9,7 @@ using namespace cv;
 
 int calcPointDist (Point maxLoc, Point prevMaxLoc);
 
+vector<Point> vPoint;
 Point minLoc; Point maxLoc; Point prevMaxLoc;
 
 int main( int argc, char** argv )
@@ -40,11 +41,10 @@ int main( int argc, char** argv )
     matchTemplate (groi, znak2, results, 5);
     normalize (results, results, 0, 1, NORM_MINMAX, -1);
     minMaxLoc (results, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
-    prevMaxLoc = maxLoc;
+    vPoint.push_back (maxLoc);
 	//namedWindow("frame",1);
-	
-    for(;;)
-    {        
+	int dist = 0;
+    for(;;) {        
         cap >> frame;              
         //imshow("frame", frame);
         roi = frame(rect);
@@ -54,19 +54,34 @@ int main( int argc, char** argv )
         normalize (results, results, 0, 1, NORM_MINMAX, -1);
         //threshold (results, results, 0.8, 1, THRESH_BINARY);
 		minMaxLoc (results, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
+		vPoint.push_back (maxLoc);
+		int size = vPoint.size();
 		
 		if (maxVal > 0.85) {
-			int dist = calcPointDist (maxLoc, prevMaxLoc);  
-			if (dist > 1) {
-				prevMaxLoc = maxLoc;	
+			if (size < 10) {
+				dist = calcPointDist (maxLoc, vPoint.at(0));  
+				if (dist > 1) {
+					vPoint.push_back (maxLoc);	
+				}
+				else {
+				rectangle (groi, maxLoc, Point(maxLoc.x + znak2.cols, 
+					maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
+				vPoint.push_back (maxLoc);
+				}
 			}
 			else {
-			rectangle (groi, maxLoc, Point( maxLoc.x + znak2.cols, 
+				dist = calcPointDist (maxLoc, vPoint.at(size-8));  
+				if (dist > 5) {
+					vPoint.push_back (maxLoc);	
+				}
+				else {
+				rectangle (groi, maxLoc, Point(maxLoc.x + znak2.cols, 
 					maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
-			prevMaxLoc = maxLoc;
+				vPoint.push_back (maxLoc);
+				}
+			}
 		}
 		cout << dist << endl;
-		}
 		/*
 		 * Nova ideja:
 		 * Usporedivat proslu i trenutnu maxLoc ako je razlika vec od
@@ -75,7 +90,20 @@ int main( int argc, char** argv )
         imshow("groi", groi);
         imshow("results", results);
         
-        if(waitKey(30) >= 0) break;
+        char c = cv::waitKey(15);
+		/// Kontrola programa         
+        switch( c ) {
+			case 'c': 
+				cap.set(CV_CAP_PROP_POS_FRAMES,0); 
+				break;    
+			case 'p': 
+				pause:
+                char d; d = cv::waitKey(0);
+                if (d =='p') break;
+                else goto pause;
+            case 27:
+				return 0;
+		}        
     }
     return 0;
 }
