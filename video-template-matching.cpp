@@ -8,6 +8,7 @@
  * pronadene lokacije proglasavamo znakom.
  */ 
 
+// OpenCV zaglavlja za korištenje openCV funkcija
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
@@ -109,30 +110,26 @@ int main( int argc, char** argv )
 			if (size < 10) {
 				// racunaj udaljenost izmedu trenutne i prve tocke
 				dist = calcPointDist (maxLoc, vPoint.at(0));
-				// ako je udaljenost veca 
+				// ako je udaljenost manja od 10 isrctaj znak
 				if (dist < 10) {
 					rectangle (groi, maxLoc, Point(maxLoc.x + znak2.cols, 
 					maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
-					vPoint.push_back (maxLoc);	
-				}
-				// inace iscrtaj pravokutnik oko pronadenog znaka
-				else {
-				vPoint.push_back (maxLoc);
+					//vPoint.push_back (maxLoc);	
 				}
 			}
 			// Ako je vektor tocaka veci od 10 clanova
 			else {
 				// racunaj udaljenost izmedu trenutnog i sedomog prije 
 				dist = calcPointDist (maxLoc, vPoint.at(size-7));  
-				// iscrtaj pravokutnik ako je udaljenost manja
+				// iscrtaj pravokutnik ako je udaljenost manja od 15 iscrtaj pravokutnik
 				if (dist < 15) {
 					rectangle (groi, maxLoc, Point(maxLoc.x + znak2.cols, 
 					maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
-					// stavi tocku u vektor	
+					// ponovi istu tocku u vektor kako bih imali duze pracanje znaka
 					vPoint.push_back (maxLoc);	
 				}
 				else {
-				// stavi tocku u vektor
+				// ponovi istu tocku u vektor kako bih imali duze pracanje znaka
 				vPoint.push_back (maxLoc);
 				}
 			}
@@ -171,4 +168,3 @@ int calcPointDist (Point maxLoc, Point prevMaxLoc)
 	cout << dist << endl;
 	return dist;
 }
-
