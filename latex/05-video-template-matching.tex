@@ -4,6 +4,10 @@
 \section{Prepoznavanje prometnog znakovlja u pokretnoj slici} % (fold)
 \label{sec:Prepoznavanje prometnog}
 
+\subsection{Prepoznavanje prometnog znakovlja upotrebom metode usporedbe
+s predloškom} % Prepoznavanje (fold)
+\label{sub:Prepoznavanje prometnog znakovlja upotrebom metode uspore}
+
 Prepoznavanje prometnog znaka u pokretnoj slici implementirano je u
 programu nazvanom \texttt{video-template-matching}. Program se u
 potpunosti oslanja na biblioteku OpenCV koja je opisana u
@@ -30,8 +34,9 @@ logičnih cijelina.
 
 
 \newpage
-\subsection{Učitavanje videa vožnje i učitavanje znaka} % (fold)
+\subsubsection{Učitavanje videa vožnje i učitavanje znaka} % (fold)
 \label{ssub:Učitavanje videa vožnje i učitavanje znaka}
+
 
 \begin{lstlisting}[label=lstUcit,caption={Izvorni kod za učitavanje
 videa i znaka}]
@@ -54,7 +59,6 @@ int main (int argc, char *argv[])
     znak3 = imread ("roi/03_roi.png");
     znak4 = imread ("roi/04_roi.png");
 
-    return 0;
 }
 \end{lstlisting}
 
@@ -68,9 +72,80 @@ završava i vraća \texttt{-1}. Kreiranim objektima \texttt{znak1},
 učitane upotrebom funkcije \texttt{imread} kojoj je predana putanja do
 slike koju treba učitati.
 
+% subsubsection Učitavanje videa vožnje i učitavanje znaka (end)
+
+\subsubsection{Postavljanje regije interesa} % (fold)
+\label{ssub:Postavljanje regije interesa}
 
 
-% subsection Učitavanje videa vožnje i učitavanje znaka (end)
+\begin{lstlisting}[label=lstRoi,caption={Izvorni kod za postvljanje
+regije interesa}]
+	// prebacivanje znak2 u sliku sivih nijansi
+	cvtColor (znak2, znak2, CV_BGR2GRAY);
+	
+	// ucitavanje slicice iz videa u frame
+	// postavljanje regije interesa u roi
+	cap >> frame;
+	rect = Rect (600, 150, 480, 120);
+    roi = frame(rect);
+	
+\end{lstlisting}
 
+Izlistanje koda~\ref{lstRoi} prikazuje upotrebu funkcije
+\texttt{cvtColor} kojom se učitani znak prebacuje u sliku sivih tonova.
+Zatim se učitava sličica u objekt \texttt{frame} iz objekta
+\texttt{cap}. Tada se kreira objekt \texttt{rect} pomoću funkcije
+\texttt{Rect()} kojom definiramo pravokutnik koordinatama gornjeg
+lijevog kuta te širinom i visinom. Takav pravokutnik upotrebljava se za
+definiranje regije interesa nad učitanom sličicom odnosno objektom
+\texttt{frame} te se regija interesa sprema u objekt \texttt{roi}.
+Regija interesa se kasnije upotrebljava u algoritmu usporedbe s
+predloškom.
+
+% subsubsection Postavljanje regije interesa (end)
+
+\newpage
+\subsubsection{Pozivanje algoritma usporedbe s predloškom} % (fold)
+\label{ssub:Pozivanje algoritma usporedbe s predloškom}
+
+\begin{lstlisting}[label=lstTemp,caption={Izvorni kod pozivanja
+algoritma usporedbe s predloškom}]
+	// postavljanje velicine results ovisno o velicini roi i znak2
+	int resultRows, resultCols;
+	resultRows = roi.rows - znak2.rows + 1;
+	resultCols = roi.cols - znak2.cols + 1;
+	results.create (resultRows, resultCols, CV_32FC1);
+
+    // pretvaranje roi u greyscale
+    cvtColor(roi, groi, CV_BGR2GRAY);      
+    // trazenje znaka u greyscale groi i spremanje u results
+    matchTemplate (groi, znak2, results, 5);
+    // normaliziranje rezultata
+    normalize (results, results, 0, 1, NORM_MINMAX, -1);
+    // traznje lokacije najveceg rezultata
+    double minVal; double maxVal;
+    minMaxLoc (results, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
+    // spremanje rezultata u vektor tocaka
+    vPoint.push_back (maxLoc);
+
+\end{lstlisting}
+
+Prije pozivanja algoritma usporedbe s predloškom implementiranog u
+funkciji \texttt{matchTemplate()} potrebno je kreirati matricu/sliku u
+koju će funkcija spremati rezultate. Matrica \texttt{results} se kreira
+ovisno o veličini matrica \texttt{roi} i \texttt{znak2} kao što
+prikazuje izlistanje koda~\ref{lstTemp}. Kako su svi parametri koje
+funkcija \texttt{matchTemplate()} kreirani, slijedi njeno pozivanje.
+Rezultat rada algoritma je spremljen u \texttt{results} te se takvi
+rezultati normaliziraju korištenjem funkcije \texttt{normalize()}. Zatim
+slijedi lociranje najvećih i najmanjih vrijednosti piksela u rezultantnoj
+matrici upotrebom funkcije \texttt{minMaxLoc()}. Korištena metoda
+usporedbe sprema najbolje rezultate kao maksimalne vrijednosti i zato se
+\texttt{maxLoc} sprema u vektor točaka za daljnju obradu.
+
+
+% subsubsection Pozivanje algoritma usporedbe s predloškom (end)
+
+% subsection Prepoznavanje (end)
 
 % section Prepoznavanje prometnog (end)
