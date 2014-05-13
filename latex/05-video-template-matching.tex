@@ -12,7 +12,7 @@ Prepoznavanje prometnog znaka u pokretnoj slici implementirano je u
 programu nazvanom \texttt{video-template-matching}. Program se u
 potpunosti oslanja na biblioteku OpenCV koja je opisana u
 podpoglavlju~\ref{sub:Biblioteka OpenCV} Program se sastoji od pet
-logičnih cijelina. 
+logičnih cijelina.
 
 \begin{itemize}
     \item Učitavanje videa vožnje gradom i učitavanje znaka.
@@ -25,12 +25,16 @@ logičnih cijelina.
         znaka nad svakom sličicom.
 \end{itemize}
 
+Slika~\ref{fig:dijagramtoka.pdf} prikazuje dijagram toka programa
+odnosno logičke cijeline od kojih se program sastoji.
+
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.4]{figures/dijagramtoka.pdf}
 \caption{Dijagram toka programa video-template-matching}
 \label{fig:dijagramtoka.pdf}
 \end{figure}
+
 
 
 \newpage
@@ -54,7 +58,7 @@ int main (int argc, char *argv[])
 
     // ucitavanje izrezanih znakova u razlicitim velicinama
     // trenutno se koristim samo znak2 
-    znak1 = imread ("roi/01_roi.png");		
+    znak1 = imread ("roi/01_roi.png");      
     znak2 = imread ("roi/02_roi.png");
     znak3 = imread ("roi/03_roi.png");
     znak4 = imread ("roi/04_roi.png");
@@ -74,21 +78,22 @@ slike koju treba učitati.
 
 % subsubsection Učitavanje videa vožnje i učitavanje znaka (end)
 
+\newpage
 \subsubsection{Postavljanje regije interesa} % (fold)
 \label{ssub:Postavljanje regije interesa}
 
 
 \begin{lstlisting}[label=lstRoi,caption={Izvorni kod za postvljanje
 regije interesa}]
-	// prebacivanje znak2 u sliku sivih nijansi
-	cvtColor (znak2, znak2, CV_BGR2GRAY);
-	
-	// ucitavanje slicice iz videa u frame
-	// postavljanje regije interesa u roi
-	cap >> frame;
-	rect = Rect (600, 150, 480, 120);
+    // prebacivanje znak2 u sliku sivih nijansi
+    cvtColor (znak2, znak2, CV_BGR2GRAY);
+    
+    // ucitavanje slicice iz videa u frame
+    // postavljanje regije interesa u roi
+    cap >> frame;
+    rect = Rect (600, 150, 480, 120);
     roi = frame(rect);
-	
+    
 \end{lstlisting}
 
 Izlistanje koda~\ref{lstRoi} prikazuje upotrebu funkcije
@@ -110,11 +115,11 @@ predloškom.
 
 \begin{lstlisting}[label=lstTemp,caption={Izvorni kod pozivanja
 algoritma usporedbe s predloškom}]
-	// postavljanje velicine results ovisno o velicini roi i znak2
-	int resultRows, resultCols;
-	resultRows = roi.rows - znak2.rows + 1;
-	resultCols = roi.cols - znak2.cols + 1;
-	results.create (resultRows, resultCols, CV_32FC1);
+    // postavljanje velicine results ovisno o velicini roi i znak2
+    int resultRows, resultCols;
+    resultRows = roi.rows - znak2.rows + 1;
+    resultCols = roi.cols - znak2.cols + 1;
+    results.create (resultRows, resultCols, CV_32FC1);
 
     // pretvaranje roi u greyscale
     cvtColor(roi, groi, CV_BGR2GRAY);      
@@ -143,6 +148,96 @@ matrici upotrebom funkcije \texttt{minMaxLoc()}. Korištena metoda
 usporedbe sprema najbolje rezultate kao maksimalne vrijednosti i zato se
 \texttt{maxLoc} sprema u vektor točaka za daljnju obradu.
 
+\newpage
+\subsubsection{Eliminacija lažno pozitivnih rezultata} % (fold)
+\label{ssub:Eliminacija lažno pozitivnih rezultata}
+
+Zbog velike količine lažno pozitivnih rezultata osmišljen je kod za
+eliminaciju istih računanjem geometrijske udaljenosti između dvije
+točke. Kod za računanje geometrijske udaljenosti je prikazan u ispisu
+kod~\ref{lstDist}. Pretpostavka je da se znak pojavljuje postepeno što
+znači da bi rezultati trebali biti u blizi prošlog rezultata odnosno ne
+bi trebali iznenadno mjenjati veliku udaljenosti. 
+
+\begin{lstlisting}[language=lstDist,caption={Izvorni kod računanja
+geometrijske udaljenosti između dvije točke}]
+int calcPointDist (Point maxLoc, Point prevMaxLoc)
+{
+    int dist = 0;
+    dist = sqrt ((maxLoc.x - prevMaxLoc.x) * (maxLoc.x - prevMaxLoc.x) +
+                 (maxLoc.y - prevMaxLoc.y) * (maxLoc.y - prevMaxLoc.y));    
+    cout << dist << endl;
+    return dist;
+}
+\end{lstlisting}
+
+Kao što se vidi iz ispisa koda~\ref{lstFP} program ima beskonačnu petlju
+u kojoj učitava sličicu po sličicu te nad svakoj do njih ponovo poziva
+algoritam usporedbe s predloškom, pronalazi najveće vrijednosti te 
+iste sprema u vektor točka \texttt{vPoint}. 
+
+\begin{lstlisting}[label=lstFP,caption={Izvorni kod obrade svih učitanih
+        sličica }]
+for (;;){
+    // ucitaj frame, postavi roi, prebaci u greyscale
+    cap >> frame;              
+    roi = frame(rect);
+    cvtColor(roi, groi, CV_BGR2GRAY);
+    
+    matchTemplate (groi, znak2, results, 5);
+    normalize (results, results, 0, 1, NORM_MINMAX, -1);
+    minMaxLoc (results, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
+    vPoint.push_back (maxLoc);
+    int size = vPoint.size();
+\end{lstlisting}
+    
+Za svaki rezultat veći od postavljene vrijednosti (0.75) izvršava se
+logika koja određuje hoće li se prepoznati znak odnosno iscrtati
+pravokutnik oko njega. Za prvih 10 \texttt{maxVal} vrijednosti većih od
+0.75 znak se prepoznajue ako je udaljenosti između početne i trenutne
+vrijednosti manja od 10. Za ostale rezultate uspoređuje se trenutni i
+sedmi prije. Ukoliko je udaljenost između njih veća od 15 znak se
+prepoznaje i iscrtava. Kod vidljiv u ispisu~\ref{lstFP2} još prikazuje
+ponovno stavljanje iste točke u vektor zbog dužeg prikaza/praćenja
+znaka. 
+
+\begin{lstlisting}[language=lstFP2,caption={Izvorni kod eliminacije
+lažno pozitivnih rezultata}]
+    // Za svaki rezultat veci od 0.75 
+    if (maxVal > 0.75) {
+        // racunaj udaljenost izmedu dva rezultata
+        // Ako je vektor tocaka manji od 10 clanova
+        if (size < 10) {
+            // racunaj udaljenost izmedu trenutne i prve tocke
+            dist = calcPointDist (maxLoc, vPoint.at(0));
+            // ako je udaljenost manja od 10 isrctaj znak
+            if (dist < 10) {
+                rectangle (groi, maxLoc, Point(maxLoc.x + znak2.cols, 
+                maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
+            }
+        }
+        // Ako je vektor tocaka veci od 10 clanova
+        else {
+            // racunaj udaljenost izmedu trenutnog i sedomog prije 
+            dist = calcPointDist (maxLoc, vPoint.at(size-7));  
+            // iscrtaj pravokutnik ako je udaljenost manja od 15 
+            if (dist < 15) {
+                rectangle (groi, maxLoc, Point(maxLoc.x + znak2.cols, 
+                maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
+                // ponovi istu tocku u vektor da se duze pracati znak
+                vPoint.push_back (maxLoc);  
+            }
+            else {
+            // ponovi istu tocku u vektor da se duze pracati znak
+            vPoint.push_back (maxLoc);
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+
+% subsubsection Eliminacija lažno pozitivnih rezultata (end)
 
 % subsubsection Pozivanje algoritma usporedbe s predloškom (end)
 
