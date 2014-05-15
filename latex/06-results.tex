@@ -8,7 +8,7 @@ U ovom poglavlju prikazani su rezultati rada razvijenog programa za
 prepozavanje statičnog znaka iz snimke prometnice vozila u pokretu.  Za
 ispitivanje funkcionalnosti metode odabrana je jedna scena voženje i
 jedan znak kojeg metoda treba pronaći. Znak je prikazan na
-slici~\ref{fig:znak}, a scena vožnje je snimljena na Osječkoj
+slici~\ref{fig:znak}, a scena vožnje je snimljena na osječkoj
 obilaznici i prikazana na slici~\ref{fig:scena.png}.
 
 \begin{figure}[h]
@@ -25,22 +25,85 @@ obilaznici i prikazana na slici~\ref{fig:scena.png}.
 \label{fig:scena.png}
 \end{figure}
 
+\newpage
 \subsection{Prikaz rezultata} % (fold)
 \label{sub:Prikaz rezultata}
 
 Rezultati su prikazani na slikama s dva prozora. U prvom prozoru 
 prikazana je regija interesa sa scene unutar koje algoritmom
 usporedbe tražimo znak. U drugom prozornu prikazana je matrica rezultata
-koji algoritam koristi za pronalazak znaka. Postoji nekoliko tipova
-rezultata: pozitivni, negativni, lažno pozitivni i lažno negativni.
-
+koju metoda koristi za pronalazak znaka. Postoji nekoliko tipova
+rezultata: pozitivni, negativni, lažno pozitivni.
+Svi tipovi rezultata su predstavljeni dalje u tekstu.
+Slika~\ref{fig:01} prikazuje sličicu iz videa sa scene na kojoj nema
+znaka niti ga je metoda/program našao što je pozitivan rezultat.
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{figures/01.png}
-\caption{}
+\caption{Prikaz sličice videa i rezultata - pozitivan rezultat}
 \label{fig:01}
 \end{figure}
+
+Lažno pozitivni rezultat prikazuje slika~\ref{fig:02} na kojoj je metoda
+pronašala znak gdje nije trebala. Takvi rezultati su očekivani ali nisu
+poželjni te ih se pokušalo smanjiti na što manji broj metodom opisanom 
+u podpoglavlju~\ref{ssub:Eliminacija lažno pozitivnih rezultata}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{figures/02.png}
+\caption{Prikaz sličice videa i matrice rezultata - lažno pozitivan
+rezultat}
+\label{fig:02}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{figures/03.png}
+\caption{Prikaz sličice videa i matrice rezultata - pozitivan rezultat }
+\label{fig:03.png}
+\end{figure}
+
+Na slikama~\ref{fig:03.png}, \ref{fig:04.png} i \ref{fig:05.png} vidi se
+da je metoda uspješno pronašla znak na različitim udaljenostima odnosno
+veličinama znaka iako se koristila samo jedna veličina znaka za
+pronalazak. Metoda odnosno program bih se mogao unaprijediti tako da se
+ugradi uspoređivanje s različitiim veličinama predloška odnosno znaka.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{figures/04.png}
+\caption{Prikaz sličice videa i matrice rezultata - pozitivan rezultat}
+\label{fig:04.png}
+\end{figure}
+
+Matematička metoda korištena u algoritmu prikazuje pozitivne rezultate
+bijelom bojom te se na slikama~\ref{fig:04.png} i \ref{fig:05.png} jasno
+mogu vidjeti "žarišta" u matrici rezultata.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{figures/05.png}
+\caption{Prikaz sličice videa i matrice rezultata - pozitivan rezultat}
+\label{fig:05.png}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{figures/06.png}
+\caption{Prikaz sličice videa i matrice rezultata - pozitivan rezultat}
+\label{fig:06.png}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{figures/07.png}
+\caption{Prikaz sličice videa i matrice rezultata - pozitivan rezultat}
+\label{fig:07.png}
+\end{figure}
+
 
 % subsection Prikaz rezultata (end)
 % section Rezultati (end)
