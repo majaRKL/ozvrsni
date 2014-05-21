@@ -7,16 +7,138 @@
 \subsection{Biblioteka OpenCV} % (fold)
 \label{sub:Biblioteka OpenCV}
 
-Test citiranja literature~\cite{opencv_library}
+OpenCV~\cite{opencv_library} (engl. \textit{Open Source Computer Vison})
+je biblioteka funkcija odnosno algoritama za matematičku obradu slike i
+računalni vid.  Objavljen je pod BSD licencom i stoga je slobodan za
+akademske i komercijalne uporabe. Sadrži C++, C, Python i Java sučelja i
+podržava Windows, Linux, Mac OS, iOS i Android platforme. OpenCV je
+dizajniran za računalnu učinkovitost, sa snažnim naglaskom na stvarno
+vremenske aplikacije. Biblioteka je napisana u optimiziranom C/C++ kodu
+te može iskoristiti prednosti višejezgrenog procesiranja. Ako se koristi
+s OpenCL (engl. \textit{Open Computing Language}) bibliotekom OpenCV
+može iskoristi prednosti hardverskog ubrzanja osnovne računalne
+platforme.
 
-Postoji više metoda odnosno algoritama koje se koriste za prepoznavanje
-različitih objekata na slici. Neke od njih su:
+Usvojen diljem svijeta, OpenCV ima zajednicu korisnika veću od 47 tisuća
+ljudi i procijenjeni broj preuzimanja prelazi sedam milijuna. Primjene
+variraju od interaktivne umjetnosti, do inspekcija mina, spajanja
+internetskih mapa i napredne robotike.
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{figures/opencv.jpg}
+\caption{OpenCV logo}
+\label{fig:opencv.svg}
+\end{figure}
+
+\newpage
+\subsection{Radna okolina} % (fold)
+\label{sub:Radna okolina}
+
+U ovom podpoglavlju je dan kratak pregled korištene radne okoline. Pod
+radnom okolinom se misli na operacijski sustav, upotrebljavane alate i
+programske biblioteke. Tako su izabrane slijedeće komponente:
+
+\begin{description}
+  \item[OS:] Ubuntu 12.04
+  \item[Biblioteka:] OpenCV 2.4.6
+  \item[Prevodioc:] GCC 4.6.3 
+  \item[Uređivač teksta:] Geany
+\end{description}
+
+Ubuntu 12.04 je izabran zbog stabilnosti, jednostavnog podešavanja i 
+dostupnosti velike količine već priprmljenih programskih paketa.
+OpenCV 2.4.6 je zadnja stabilna verzija u trenutnku pisanja. Odabrana
+je jer se lagano prevodi i instalira na odabranoj verziji Ubuntu OSa.
+GCC 4.6.3 je zadna verzija koja dolazi s Ubuntu 12.04 distribucijom.
+Geany je uporijebljen zbog svoje jednostavnosti i integracije s GCC
+prevoditeljem.
+\\
+
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+    \includegraphics[width=\linewidth]{figures/ubuntu.png}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+    \includegraphics[width=\linewidth]{figures/gcc.jpeg}
+\endminipage\hfill
+\minipage{0.32\textwidth}%
+    \includegraphics[width=\linewidth]{figures/geany.jpg}
+\endminipage
+\caption{Prikaz logotipa upotrebljenih tehnologija}
+\end{figure}
+
+% subsection Radna okolina (end)
+
+\newpage
 % subsection Biblioteka OpenCV (end)
 
 \subsection{Algoritam usporedbe predloškom} % (fold)
 \label{sub:Algoritam usporedbe predloškom}
 
+Postoji više metoda odnosno algoritama koje se koriste za prepoznavanje
+različitih objekata na slici. Jedna od njih je algoritam usporedbe s
+predloškom (engl. \textit{Template Matching}). U ovom podpoglavlju dan
+je primjer korištenja takve metode na mirnoj slici. 
+
+Algoritam usporedbe predloškom je metoda za pronalaženje područja na
+slici koji odgovaraju odnosno su slični uspoređenom predlošku. 
+
+Princip rada se zansniva na dvije komponente:
+\begin{itemize}
+    \item \textbf{Izvorna slika (I)} - slika u kojoj se pronalazi
+        odgovarajuća slika predloška.
+    \item \textbf{Slika predloška (T)} - manja slika odnosno uzorak koji
+        se traži na izvornoj slici.
+\end{itemize}
+
+Cilj metode je otkriti najviše odgovarajuća mjesta. Na
+slici~\ref{fig:tm1.jpg} vidi se upotreba izvorne slike, slike predloška
+i prikaz krajnjeg rezultata metode usporedbe predloškom.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{figures/tm1.jpg}
+\caption{Prikaz izvorne slike, slike predloška i krajnjeg rezultata
+metode usporedbe predloškom}
+\label{fig:tm1.jpg}
+\end{figure}
+
+Identificiranje odgovarajućeg područja, radi se uspoređivanjem slike
+predloška s izvornom slikom. Pomicanjem predloška piksel po piksel po
+izvornoj slici s lijeva na desno, od gore prema dolje kao što je
+prikazano na slici~\ref{fig:tm2.jpg}. Na svakoj lokaciji, računa se
+vrijednosti koja predstavlja koliko dobro predložak odgovara izvornoj
+slici, odnosno koliko su slični.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{figures/tm2.jpg}
+\caption{Prikaz pomicanja predloška po izvornoj slici}
+\label{fig:tm2.jpg}
+\end{figure}
+
+For each location of T over I, you store the metric in the result matrix
+(R). Each location (x,y) in R contains the match metric:
+
+Za svaku lokaciju piksela u predlošku T preko slike I, pohranjuju se
+vrijednosti u matricu rezultata R. Svaka lokacija (x, y) u matrici R
+sadrži vrijednosti koja govori koliko je na toj lokaciji predložak
+sličan izvornoj slici. 
+
+Slika~\ref{fig:tm3.jpg} prikazuje rezultate R pomicanja predloška po
+izvornoj slici. Najsvjetlije mjesta pokazuju odgovarajuće
+vrijednosti. Kao što se vidi, mjesto obilježeno crvenim krugom 
+je ono s najvišom vrijednosti.  
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{figures/tm3.jpg}
+\caption{}
+\label{fig:tm3.jpg}
+\end{figure}
 % subsection Algoritam usporedbe predloškom (end)
 
 % section Tehnologija i teorija (end)
