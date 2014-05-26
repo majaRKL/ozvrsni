@@ -119,26 +119,113 @@ slici, odnosno koliko su slični.
 \label{fig:tm2.jpg}
 \end{figure}
 
-For each location of T over I, you store the metric in the result matrix
-(R). Each location (x,y) in R contains the match metric:
-
 Za svaku lokaciju piksela u predlošku T preko slike I, pohranjuju se
 vrijednosti u matricu rezultata R. Svaka lokacija (x, y) u matrici R
 sadrži vrijednosti koja govori koliko je na toj lokaciji predložak
 sličan izvornoj slici. 
 
 Slika~\ref{fig:tm3.jpg} prikazuje rezultate R pomicanja predloška po
-izvornoj slici. Najsvjetlije mjesta pokazuju odgovarajuće
-vrijednosti. Kao što se vidi, mjesto obilježeno crvenim krugom 
-je ono s najvišom vrijednosti.  
+izvornoj slici. Korištena metoda je \texttt{TM\_CCORR\_NORMED}.
+Najsvjetlija mjesta pokazuju odgovarajuće vrijednosti. Kao što se vidi,
+mjesto obilježeno crvenim krugom je ono s najvišom vrijednosti. U praksi
+se za pronalazk najvećih odnosno najmanjih vrijednosti koristi funkcija
+\texttt{minMaxLoc} ovisno o metodi koja se koristi.
 
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.8]{figures/tm3.jpg}
-\caption{}
+\caption{Prikaz matrice rezultata R nakon usporedbe s predloškom}
 \label{fig:tm3.jpg}
 \end{figure}
+
+OpenCV funkcija \texttt{matchTemplate} sadržava nekoliko metoda za
+računanje rezultantne matrice. Slijede njihove jednadžbe:
+\begin{itemize}
+    \item \textbf{CV\_TM\_SQDIFF} 
+    \item \textbf{CV\_TM\_SQDIFF\_NORMED} 
+    \item \textbf{CV\_TM\_CCORR} 
+    \item \textbf{CV\_TM\_CCORR\_NORMED} 
+    \item \textbf{CV\_TM\_CCOEFF} 
+    \item \textbf{CV\_TM\_CCOEFF\_NORMED} 
+\end{itemize}
+
+\newpage
+\subsubsection{Primjer korištenje funkcije \texttt{matchTemplate} } % (fold)
+\label{ssub:Primjer korištenje funkcije }
+
+Slijedi primjer korištenja funkcije \texttt{matchTemplate} za pronalazak
+predloška na učitanoj slici.
+
+1. Uključivanje potrebnih zaglavlja i deklaracija varijabli za spremanje
+slika i naziv prozora.
+\begin{lstlisting}[label=lst1,caption={}]
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+using namespace cv;
+void main () {
+Mat img; Mat templ; Mat result;
+char* image_window = "Source Image";
+char* result_window = "Result window";
+int match_method;
+\end{lstlisting}
+
+2. Učitavanje izvorne slike i slike predloška preko argumenata predanih
+programu.
+\begin{lstlisting}[language=,caption={}]
+img = imread( argv[1], 1 );
+templ = imread( argv[2], 1 );
+match_method = argv[3];
+\end{lstlisting}
+
+3. Kreiranje prozora za prikaz učitane slike i slike rezultata.
+\begin{lstlisting}[language=,caption={}]
+namedWindow( image_window, CV_WINDOW_AUTOSIZE );
+namedWindow( result_window, CV_WINDOW_AUTOSIZE );
+\end{lstlisting}
+
+4. Računanje veličine matrice rezultata i njeno kreiranje.
+\begin{lstlisting}[language=,caption={}]
+int result_cols =  img.cols - templ.cols + 1;
+int result_rows = img.rows - templ.rows + 1;
+result.create( result_cols, result_rows, CV_32FC1 )
+\end{lstlisting}
+
+5. Pozivanje funkcije matrice rezultata i predvanje potrebnih
+argumenata: izvorna slika, slika predloška, matrica rezultata, broj
+metode.
+\begin{lstlisting}[language=,caption={}]
+matchTemplate( img, templ, result, match_method );
+\end{lstlisting}
+
+6. Normaliziranje rezultata.
+\begin{lstlisting}[language=,caption={}]
+normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
+\end{lstlisting}
+
+7. Kreiranje varijabli za pronalazak maksimalne i minimalne vrijednost i
+lokacije te pozivanje funkcije za pronalazk istih.
+\begin{lstlisting}[language=,caption={}]
+double minVal; double maxVal; Point minLoc; Point maxLoc;
+Point matchLoc;
+minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
+\end{lstlisting}
+
+8. Označavanje rezultata pravokutnikom nad 
+\begin{lstlisting}[language=,caption={}]
+rectangle( img_display, matchLoc, Point( matchLoc.x + templ.cols , matchLoc.y + templ.rows ), Scalar::all(0), 2, 8, 0 );
+rectangle( result, matchLoc, Point( matchLoc.x + templ.cols , matchLoc.y + templ.rows ), Scalar::all(0), 2, 8, 0 );
+imshow( image_window, img_display );
+imshow( result_window, result );
+
+waitKey(0);
+}
+\end{lstlisting}
+% subsubsection Primjer korištenje funkcije tt (end)
+
 % subsection Algoritam usporedbe predloškom (end)
 
 % section Tehnologija i teorija (end)
