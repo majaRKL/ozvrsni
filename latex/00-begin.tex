@@ -29,7 +29,7 @@
 % For advance mathematical formulas we use
 \usepackage{amsmath}
 % For setting line spacing e.g. \dobulespacing
-\usepackage{setspace}
+\usepackage[onehalfspacing]{setspace}
 % Simplifies including multi-page PDF or PS docs
 \usepackage{pdfpages}
 % For changing title styls with \titleformat
@@ -104,10 +104,10 @@
     keywordstyle=[2]\color{myred},
     language=C,
     morekeywords={new},            
-    keywords=[2]{imread, VideoCapture, Mat, PCDReader, PCDWriter,
-    VoxelGrid, StatisticalOutlierRemoval, search, KdTree, Normal,
-    NormalEstimation, PointXYZRGB, PointXYZRGBNormal, PointCloud, Ptr,
-    PolygonMesh, Poisson, std, string, io, saveVTKFile, boost, cout,
+    keywords=[2]{imread, VideoCapture, Mat, cvtColor, Rect,
+    matchTemplate, normalize, Point, minMaxLoc, rectangle,
+    imshow, namedWindow, PointXYZRGBNormal, PointCloud, Ptr,
+    PolygonMesh, CV\_WINDOW\_AUTOSIZE, waitKey, boost, cout,
     concatenateFields, visualization, PCLVisualizer, shared\_ptr,
     posix\_time, microseconds, this\_thread, sleep, PointType,
     PointTypeN},

@@ -159,7 +159,7 @@ kod~\ref{lstDist}. Pretpostavka je da se znak pojavljuje postepeno što
 znači da bi rezultati trebali biti u blizi prošlog rezultata odnosno ne
 bi trebali iznenadno mjenjati veliku udaljenosti. 
 
-\begin{lstlisting}[language=lstDist,caption={Izvorni kod računanja
+\begin{lstlisting}[label=lstDist,caption={Izvorni kod računanja
 geometrijske udaljenosti između dvije točke}]
 int calcPointDist (Point maxLoc, Point prevMaxLoc)
 {
@@ -201,7 +201,7 @@ prepoznaje i iscrtava. Kod vidljiv u ispisu~\ref{lstFP2} još prikazuje
 ponovno stavljanje iste točke u vektor zbog dužeg prikaza/praćenja
 znaka. 
 
-\begin{lstlisting}[language=lstFP2,caption={Izvorni kod eliminacije
+\begin{lstlisting}[label=lstFP2,caption={Izvorni kod eliminacije
 lažno pozitivnih rezultata}]
     // Za svaki rezultat veci od 0.75 
     if (maxVal > 0.75) {
