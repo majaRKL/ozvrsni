@@ -93,7 +93,7 @@ Princip rada se zansniva na dvije komponente:
         se traži na izvornoj slici.
 \end{itemize}
 
-Cilj metode je otkriti najviše odgovarajuća mjesta. Na
+Cilj metode je otkriti pronaći odgovarajuća mjesta. Na
 slici~\ref{fig:tm1.jpg} vidi se upotreba izvorne slike, slike predloška
 i prikaz krajnjeg rezultata metode usporedbe predloškom.
 
@@ -143,12 +143,38 @@ OpenCV funkcija \texttt{matchTemplate} sadržava nekoliko metoda za
 računanje rezultantne matrice. Slijede njihove jednadžbe:
 \begin{itemize}
     \item \textbf{CV\_TM\_SQDIFF} 
+        \begin{equation}
+            R\left ( x,y \right )= \sum_{{x}',{y}'} (T({x}',{y}')-I\left ( x+{x}',y+{y}' \right ))^{2}
+        \end{equation}
     \item \textbf{CV\_TM\_SQDIFF\_NORMED} 
+        \begin{equation}
+            R\left ( x,y \right )= {\frac{ \sum(T({x}',{y}')-I\left ( x+{x}',y+{y}' \right ))^{2}_}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}}
+        \end{equation}
     \item \textbf{CV\_TM\_CCORR} 
+        \begin{equation}
+            R\left ( x,y \right )= \sum_{{x}',{y}'} (T({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}
+        \end{equation}
     \item \textbf{CV\_TM\_CCORR\_NORMED} 
+        \begin{equation}
+            R\left ( x,y \right )= {\frac{ \sum(T({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}_}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}}
+        \end{equation}
     \item \textbf{CV\_TM\_CCOEFF} 
+        \begin{equation}
+            R\left ( x,y \right )= \sum_{{x}',{y}'} ({T}'({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}
+        \end{equation}
+        gdje je:
+        \begin{equation}
+            {T}'({x}',{y}')=T({x}',{y}')-1/(w\cdot h)\cdot \sum_{{x}'',{y}''}T({x}'',{y}'')
+        \end{equation}
+        \begin{equation}
+            I\left ( x+{x}',y+{y}' \right )=I\left ( x+{x}',y+{y}' \right )- \sum_{{x}'',{y}''}I\left ( x+{x}'',y+{y}'' \right ))^{2}
+        \end{equation}
     \item \textbf{CV\_TM\_CCOEFF\_NORMED} 
+        \begin{equation}
+        R\left ( x,y \right )= {\frac{ \sum({T}'({x}',{y}')\cdot {I}'\left ( x+{x}',y+{y}' \right ))^{2}_}{\sqrt{\sum_{{x}',{y}'}{T}'({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}{I}'\left ( x+{x}',y+{y}' \right ))^{2}}}}    
+        \end{equation}
 \end{itemize}
+
 
 \newpage
 \subsubsection{Primjer korištenje funkcije \texttt{matchTemplate} } % (fold)
@@ -166,6 +192,7 @@ slika i naziv prozora.
 #include <stdio.h>
 using namespace std;
 using namespace cv;
+
 void main () {
 Mat img; Mat templ; Mat result;
 char* image_window = "Source Image";
@@ -175,20 +202,20 @@ int match_method;
 
 2. Učitavanje izvorne slike i slike predloška preko argumenata predanih
 programu.
-\begin{lstlisting}[language=,caption={}]
+\begin{lstlisting}[caption={}]
 img = imread( argv[1], 1 );
 templ = imread( argv[2], 1 );
 match_method = argv[3];
 \end{lstlisting}
 
 3. Kreiranje prozora za prikaz učitane slike i slike rezultata.
-\begin{lstlisting}[language=,caption={}]
+\begin{lstlisting}[caption={}]
 namedWindow( image_window, CV_WINDOW_AUTOSIZE );
 namedWindow( result_window, CV_WINDOW_AUTOSIZE );
 \end{lstlisting}
 
 4. Računanje veličine matrice rezultata i njeno kreiranje.
-\begin{lstlisting}[language=,caption={}]
+\begin{lstlisting}[caption={}]
 int result_cols =  img.cols - templ.cols + 1;
 int result_rows = img.rows - templ.rows + 1;
 result.create( result_cols, result_rows, CV_32FC1 )
@@ -197,25 +224,26 @@ result.create( result_cols, result_rows, CV_32FC1 )
 5. Pozivanje funkcije matrice rezultata i predvanje potrebnih
 argumenata: izvorna slika, slika predloška, matrica rezultata, broj
 metode.
-\begin{lstlisting}[language=,caption={}]
+\begin{lstlisting}[caption={}]
 matchTemplate( img, templ, result, match_method );
 \end{lstlisting}
 
 6. Normaliziranje rezultata.
-\begin{lstlisting}[language=,caption={}]
+\begin{lstlisting}[caption={}]
 normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
 \end{lstlisting}
 
 7. Kreiranje varijabli za pronalazak maksimalne i minimalne vrijednost i
 lokacije te pozivanje funkcije za pronalazk istih.
-\begin{lstlisting}[language=,caption={}]
+\begin{lstlisting}[caption={}]
 double minVal; double maxVal; Point minLoc; Point maxLoc;
 Point matchLoc;
 minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
 \end{lstlisting}
 
-8. Označavanje rezultata pravokutnikom nad 
-\begin{lstlisting}[language=,caption={}]
+8. Iscrtavanje oko pronađenih lokacija te prikaz prozora izvorne slike i
+rezultata.
+\begin{lstlisting}[caption={}]
 rectangle( img_display, matchLoc, Point( matchLoc.x + templ.cols , matchLoc.y + templ.rows ), Scalar::all(0), 2, 8, 0 );
 rectangle( result, matchLoc, Point( matchLoc.x + templ.cols , matchLoc.y + templ.rows ), Scalar::all(0), 2, 8, 0 );
 imshow( image_window, img_display );
