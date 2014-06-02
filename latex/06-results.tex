@@ -29,14 +29,17 @@ obilaznici i prikazana na slici~\ref{fig:scena.png}.
 \subsection{Prikaz rezultata} % (fold)
 \label{sub:Prikaz rezultata}
 
-Rezultati su prikazani na slikama s dva prozora. U prvom prozoru 
-prikazana je regija interesa sa scene unutar koje algoritmom
-usporedbe tražimo znak. U drugom prozornu prikazana je matrica rezultata
-koju metoda koristi za pronalazak znaka. Postoji nekoliko tipova
-rezultata: pozitivni, negativni, lažno pozitivni.
-Svi tipovi rezultata su predstavljeni dalje u tekstu.
-Slika~\ref{fig:01} prikazuje sličicu iz videa sa scene na kojoj nema
-znaka niti ga je metoda/program našao što je pozitivan rezultat.
+Rezultati su prikazani na slikama s dva prozora. U prvom prozoru
+prikazana je regija interesa sa scene unutar koje algoritmom usporedbe
+tražimo znak. Regija interese je odabrana na temelju pretpostavke da će
+pozcija znaka bit s desne strane učitane scene. Također regija interesa
+se definira kako bih se smanjila količina podataka koju algoritam mora
+obraditi. U drugom prozornu prikazana je matrica rezultata koju metoda
+koristi za pronalazak znaka.  Postoji nekoliko tipova rezultata:
+pozitivni, negativni i lažno pozitivni. Svi tipovi rezultata su
+predstavljeni dalje u tekstu. Slika~\ref{fig:01} prikazuje sličicu iz
+videa sa scene na kojoj nema znaka niti ga je metoda/program našao što
+je pozitivan rezultat.
 
 \begin{figure}[h]
 \centering
@@ -72,23 +75,29 @@ veličinama znaka iako se koristila samo jedna veličina znaka za
 pronalazak. Metoda odnosno program bih se mogao unaprijediti tako da se
 ugradi uspoređivanje s različitiim veličinama predloška odnosno znaka.
 
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.5]{figures/04.png}
+\begin{figure}[!htb]
+\minipage{0.5\textwidth}
+    \includegraphics[width=\linewidth]{figures/04.png}
+\endminipage\hfill
+\minipage{0.5\textwidth}
+    \includegraphics[width=\linewidth]{figures/05.png}
+\endminipage\hfill
 \caption{Prikaz sličice videa i matrice rezultata - pozitivan rezultat}
 \label{fig:04.png}
 \end{figure}
 
 Matematička metoda korištena u algoritmu prikazuje pozitivne rezultate
-bijelom bojom te se na slikama~\ref{fig:04.png} i \ref{fig:05.png} jasno
-mogu vidjeti "žarišta" u matrici rezultata.
+bijelom bojom te se na slici~\ref{fig:04.png} jasno mogu vidjeti
+"žarišta" u matrici rezultata.
 
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.5]{figures/05.png}
-\caption{Prikaz sličice videa i matrice rezultata - pozitivan rezultat}
-\label{fig:05.png}
-\end{figure}
+\newpage
+
+Slika~\ref{fig:06.png} također prikazuje uspješan pronalazak znaka kada
+je i znak na izvornoj slici nešto veći nego na slici predloška.
+Slika~\ref{fig:07.png} prikazuje negativan rezultat iako se na slici s
+rezultatima može vidjeti "žarište" na lokaciji gdje je znak. Program se
+može unaprijediti da prati relativne vrijednosti u matrici rezultata i
+na taj način bi se takvi negativni rezultati mogli smanjiti.
 
 \begin{figure}[h]
 \centering
@@ -100,7 +109,7 @@ mogu vidjeti "žarišta" u matrici rezultata.
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{figures/07.png}
-\caption{Prikaz sličice videa i matrice rezultata - pozitivan rezultat}
+\caption{Prikaz sličice videa i matrice rezultata - negativan rezultat}
 \label{fig:07.png}
 \end{figure}
 
