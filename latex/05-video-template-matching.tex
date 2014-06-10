@@ -12,7 +12,7 @@ Prepoznavanje prometnog znaka u pokretnoj slici implementirano je u
 programu nazvanom \texttt{video-template-matching}. Program se u
 potpunosti oslanja na biblioteku OpenCV koja je opisana u
 podpoglavlju~\ref{sub:Biblioteka OpenCV} Program se sastoji od pet
-logičnih cijelina.
+logičkih cjelina.
 
 \begin{itemize}
     \item Učitavanje videa vožnje gradom i učitavanje znaka.
@@ -72,7 +72,7 @@ učitavanje znaka upotrebom klase \texttt{VideoCapture} i funkcije
 \texttt{imgproc.hpp}. Kreiranom objektu \texttt{cap} predana je putanja
 do videa kojeg treba učitati. Ukoliko video nije uspješno učitan program
 završava i vraća \texttt{-1}. Kreiranim objektima \texttt{znak1},
-\texttt{znak2}, \texttt{znak3}, \texttt{znak4} pridjeljene su slike
+\texttt{znak2}, \texttt{znak3}, \texttt{znak4} pridružene su slike
 učitane upotrebom funkcije \texttt{imread} kojoj je predana putanja do
 slike koju treba učitati.
 
@@ -139,8 +139,8 @@ Prije pozivanja algoritma usporedbe s predloškom implementiranog u
 funkciji \texttt{matchTemplate()} potrebno je kreirati matricu/sliku u
 koju će funkcija spremati rezultate. Matrica \texttt{results} se kreira
 ovisno o veličini matrica \texttt{roi} i \texttt{znak2} kao što
-prikazuje izlistanje koda~\ref{lstTemp}. Kako su svi parametri koje
-funkcija \texttt{matchTemplate()} kreirani, slijedi njeno pozivanje.
+prikazuje izlistanje koda~\ref{lstTemp} Kako su svi parametri koje
+funkcija \texttt{matchTemplate()} prima kreirani, slijedi njeno pozivanje.
 Rezultat rada algoritma je spremljen u \texttt{results} te se takvi
 rezultati normaliziraju korištenjem funkcije \texttt{normalize()}. Zatim
 slijedi lociranje najvećih i najmanjih vrijednosti piksela u rezultantnoj
@@ -155,9 +155,10 @@ usporedbe sprema najbolje rezultate kao maksimalne vrijednosti i zato se
 Zbog velike količine lažno pozitivnih rezultata osmišljen je kod za
 eliminaciju istih računanjem geometrijske udaljenosti između dvije
 točke. Kod za računanje geometrijske udaljenosti je prikazan u ispisu
-kod~\ref{lstDist}. Pretpostavka je da se znak pojavljuje postepeno što
-znači da bi rezultati trebali biti u blizi prošlog rezultata odnosno ne
-bi trebali iznenadno mjenjati veliku udaljenosti. 
+koda~\ref{lstDist} Pretpostavka je da se znak pojavljuje postepeno što
+znači da bi rezultati trebali biti u blizini prošlog rezultata odnosno ne
+bi trebali iznenadno pojavljivati na velikim udaljenostima između
+uzastopnih sličica. 
 
 \begin{lstlisting}[label=lstDist,caption={Izvorni kod računanja
 geometrijske udaljenosti između dvije točke}]
@@ -172,7 +173,7 @@ int calcPointDist (Point maxLoc, Point prevMaxLoc)
 \end{lstlisting}
 
 Kao što se vidi iz ispisa koda~\ref{lstFP} program ima beskonačnu petlju
-u kojoj učitava sličicu po sličicu te nad svakoj do njih ponovo poziva
+u kojoj učitava sličicu po sličicu te nad svakom od njih ponovo poziva
 algoritam usporedbe s predloškom, pronalazi najveće vrijednosti te 
 iste sprema u vektor točka \texttt{vPoint}. 
 
@@ -194,13 +195,14 @@ for (;;){
 Za svaki rezultat veći od postavljene vrijednosti (0.75) izvršava se
 logika koja određuje hoće li se prepoznati znak odnosno iscrtati
 pravokutnik oko njega. Za prvih 10 \texttt{maxVal} vrijednosti većih od
-0.75 znak se prepoznajue ako je udaljenosti između početne i trenutne
+0.75 znak se prepoznaje ako je udaljenost između početne i trenutne
 vrijednosti manja od 10. Za ostale rezultate uspoređuje se trenutni i
 sedmi prije. Ukoliko je udaljenost između njih veća od 15 znak se
 prepoznaje i iscrtava. Kod vidljiv u ispisu~\ref{lstFP2} još prikazuje
 ponovno stavljanje iste točke u vektor zbog dužeg prikaza/praćenja
 znaka. 
 
+\newpage
 \begin{lstlisting}[label=lstFP2,caption={Izvorni kod eliminacije
 lažno pozitivnih rezultata}]
     // Za svaki rezultat veci od 0.75 

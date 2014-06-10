@@ -42,18 +42,17 @@ programske biblioteke. Tako su izabrane slijedeće komponente:
 \begin{description}
   \item[OS:] Ubuntu 12.04
   \item[Biblioteka:] OpenCV 2.4.6
-  \item[Prevodioc:] GCC 4.6.3 
+  \item[Prevoditelj:] GCC 4.6.3 
   \item[Uređivač teksta:] Geany
 \end{description}
 
-Ubuntu 12.04 je izabran zbog stabilnosti, jednostavnog podešavanja i 
-dostupnosti velike količine već priprmljenih programskih paketa.
-OpenCV 2.4.6 je zadnja stabilna verzija u trenutnku pisanja. Odabrana
-je jer se lagano prevodi i instalira na odabranoj verziji Ubuntu OSa.
-GCC 4.6.3 je zadna verzija koja dolazi s Ubuntu 12.04 distribucijom.
-Geany je uporijebljen zbog svoje jednostavnosti i integracije s GCC
-prevoditeljem.
-\\
+Ubuntu 12.04 je izabran zbog stabilnosti, jednostavnog podešavanja i
+dostupnosti velike količine već priprmljenih programskih paketa.  OpenCV
+2.4.6 je zadnja stabilna verzija u trenutnku pisanja. Odabrana je jer se
+lagano prevodi i instalira na odabranoj verziji Ubuntu OSa.  GCC 4.6.3
+je zadnja verzija C++ prevoditelja koja dolazi s Ubuntu 12.04
+distribucijom.  Geany je uporijebljen zbog svoje jednostavnosti i
+integracije s GCC prevoditeljem.  \\
 
 
 \begin{figure}[!htb]
@@ -79,13 +78,13 @@ prevoditeljem.
 
 Postoji više metoda odnosno algoritama koje se koriste za prepoznavanje
 različitih objekata na slici. Jedna od njih je algoritam usporedbe s
-predloškom (engl. \textit{Template Matching}). U ovom podpoglavlju dan
-je primjer korištenja takve metode na mirnoj slici. 
+predloškom~\cite{web:opencv} (engl. \textit{Template Matching}). U ovom
+podpoglavlju dan je primjer korištenja takve metode na mirnoj slici. 
 
 Algoritam usporedbe predloškom je metoda za pronalaženje područja na
 slici koji odgovaraju odnosno su slični uspoređenom predlošku. 
 
-Princip rada se zansniva na dvije komponente:
+Princip rada zasniva se na dvije komponente:
 \begin{itemize}
     \item \textbf{Izvorna slika (I)} - slika u kojoj se pronalazi
         odgovarajuća slika predloška.
@@ -93,7 +92,7 @@ Princip rada se zansniva na dvije komponente:
         se traži na izvornoj slici.
 \end{itemize}
 
-Cilj metode je otkriti pronaći odgovarajuća mjesta. Na
+Cilj metode je pronaći odgovarajuća mjesta. Na
 slici~\ref{fig:tm1.jpg} vidi se upotreba izvorne slike, slike predloška
 i prikaz krajnjeg rezultata metode usporedbe predloškom.
 
@@ -121,14 +120,14 @@ slici, odnosno koliko su slični.
 
 Za svaku lokaciju piksela u predlošku T preko slike I, pohranjuju se
 vrijednosti u matricu rezultata R. Svaka lokacija (x, y) u matrici R
-sadrži vrijednosti koja govori koliko je na toj lokaciji predložak
+sadrži vrijednost koja govori koliko je na toj lokaciji predložak
 sličan izvornoj slici. 
 
 Slika~\ref{fig:tm3.jpg} prikazuje rezultate R pomicanja predloška po
 izvornoj slici. Korištena metoda je \texttt{TM\_CCORR\_NORMED}.
 Najsvjetlija mjesta pokazuju odgovarajuće vrijednosti. Kao što se vidi,
 mjesto obilježeno crvenim krugom je ono s najvišom vrijednosti. U praksi
-se za pronalazk najvećih odnosno najmanjih vrijednosti koristi funkcija
+se za pronalazak najvećih odnosno najmanjih vrijednosti koristi funkcija
 \texttt{minMaxLoc} ovisno o metodi koja se koristi.
 
 
@@ -221,7 +220,7 @@ int result_rows = img.rows - templ.rows + 1;
 result.create( result_cols, result_rows, CV_32FC1 )
 \end{lstlisting}
 
-5. Pozivanje funkcije matrice rezultata i predvanje potrebnih
+5. Pozivanje funkcije matrice rezultata i predavanje potrebnih
 argumenata: izvorna slika, slika predloška, matrica rezultata, broj
 metode.
 \begin{lstlisting}[caption={}]
@@ -234,15 +233,15 @@ normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
 \end{lstlisting}
 
 7. Kreiranje varijabli za pronalazak maksimalne i minimalne vrijednost i
-lokacije te pozivanje funkcije za pronalazk istih.
+lokacije te pozivanje funkcije za pronalazak istih.
 \begin{lstlisting}[caption={}]
 double minVal; double maxVal; Point minLoc; Point maxLoc;
 Point matchLoc;
 minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
 \end{lstlisting}
 
-8. Iscrtavanje oko pronađenih lokacija te prikaz prozora izvorne slike i
-rezultata.
+8. Iscrtavanje pravokutnika oko pronađenih lokacija te prikaz prozora
+izvorne slike i rezultata.
 \begin{lstlisting}[caption={}]
 rectangle( img_display, matchLoc, Point( matchLoc.x + templ.cols , matchLoc.y + templ.rows ), Scalar::all(0), 2, 8, 0 );
 rectangle( result, matchLoc, Point( matchLoc.x + templ.cols , matchLoc.y + templ.rows ), Scalar::all(0), 2, 8, 0 );
