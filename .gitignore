@@ -2,3 +2,11 @@ exmaple-temaplate-matching/
 video-template-matching
 video-template-matching.o
 video/pocetni.avi
+latex/*.aux
+latex/*.bbl
+latex/*.blg
+latex/*.log
+latex/*.out
+latex/*.toc
+*.doc
+*.pdf
