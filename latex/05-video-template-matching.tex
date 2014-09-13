@@ -1,12 +1,11 @@
 \newpage
 \setcounter{figure}{0}
 
-\section{Prepoznavanje prometnog znakovlja u pokretnoj slici} % (fold)
+\section{Izgradnja sustava prepoznavanja prometnog znakovlja u pokretnoj slici} % (fold)
 \label{sec:Prepoznavanje prometnog}
 
-\subsection{Prepoznavanje prometnog znakovlja upotrebom metode usporedbe
-s predloškom} % Prepoznavanje (fold)
-\label{sub:Prepoznavanje prometnog znakovlja upotrebom metode uspore}
+\subsection{Prepoznavanje prometnog znakovlja metodom komparacije referentne i analizirane slike} % Prepoznavanje (fold)
+\label{sub:Prepoznavanje prometnog}
 
 Prepoznavanje prometnog znaka u pokretnoj slici implementirano je u
 programu nazvanom \texttt{video-template-matching}. Program se u
@@ -57,7 +56,7 @@ int main (int argc, char *argv[])
     Mat znak1, znak2, znak3, znak4;
 
     // ucitavanje izrezanih znakova u razlicitim velicinama
-    // trenutno se koristim samo znak2 
+    // trenutno se koristi samo znak2 
     znak1 = imread ("roi/01_roi.png");      
     znak2 = imread ("roi/02_roi.png");
     znak3 = imread ("roi/03_roi.png");
@@ -226,11 +225,11 @@ lažno pozitivnih rezultata}]
             if (dist < 15) {
                 rectangle (groi, maxLoc, Point(maxLoc.x + znak2.cols, 
                 maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
-                // ponovi istu tocku u vektor da se duze pracati znak
+                // ponovi istu tocku u vektor da se duze prati znak
                 vPoint.push_back (maxLoc);  
             }
             else {
-            // ponovi istu tocku u vektor da se duze pracati znak
+            // ponovi istu tocku u vektor da se duze prati znak
             vPoint.push_back (maxLoc);
             }
         }

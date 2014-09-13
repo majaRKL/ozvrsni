@@ -1,10 +1,13 @@
 \newpage
 \setcounter{figure}{0}
 
-\section{Pregled korištenih tehnologija i algoritama} % (fold)
+\section{Prepoznavanje prometnog znakovlja u slici} % (fold)
 \label{sec:Tehnologija i teorija}
 
-\subsection{Biblioteka OpenCV} % (fold)
+\subsection{Korištene tehnologije}
+U ovom poglavlju dan je pregled osnovnih tehnologija koje su korištene za izgradnju završnog rada. Biblioteka OpenCV te korištena radna okolina, odnosno operacijski sustav i prevoditelj (engl. \textit{compiler}).
+
+\subsubsection{Biblioteka OpenCV} % (fold)
 \label{sub:Biblioteka OpenCV}
 
 OpenCV~\cite{opencv_library} (engl. \textit{Open Source Computer Vison})
@@ -32,12 +35,12 @@ internetskih mapa i napredne robotike.
 \end{figure}
 
 \newpage
-\subsection{Radna okolina} % (fold)
+\subsubsection{Radna okolina} % (fold)
 \label{sub:Radna okolina}
 
 U ovom podpoglavlju je dan kratak pregled korištene radne okoline. Pod
 radnom okolinom se misli na operacijski sustav, upotrebljavane alate i
-programske biblioteke. Tako su izabrane slijedeće komponente:
+programske biblioteke. Tako su izabrane sljedeće komponente:
 
 \begin{description}
   \item[OS:] Ubuntu 12.04
@@ -48,7 +51,7 @@ programske biblioteke. Tako su izabrane slijedeće komponente:
 
 Ubuntu 12.04 je izabran zbog stabilnosti, jednostavnog podešavanja i
 dostupnosti velike količine već priprmljenih programskih paketa.  OpenCV
-2.4.6 je zadnja stabilna verzija u trenutnku pisanja. Odabrana je jer se
+2.4.6 je zadnja stabilna verzija u trenutku pisanja. Odabrana je jer se
 lagano prevodi i instalira na odabranoj verziji Ubuntu OSa.  GCC 4.6.3
 je zadnja verzija C++ prevoditelja koja dolazi s Ubuntu 12.04
 distribucijom.  Geany je uporijebljen zbog svoje jednostavnosti i
@@ -73,13 +76,13 @@ integracije s GCC prevoditeljem.  \\
 \newpage
 % subsection Biblioteka OpenCV (end)
 
-\subsection{Algoritam usporedbe predloškom} % (fold)
+\subsection{Prepoznavanje znakovlja u statičnoj slici} % (fold)
 \label{sub:Algoritam usporedbe predloškom}
 
 Postoji više metoda odnosno algoritama koje se koriste za prepoznavanje
-različitih objekata na slici. Jedna od njih je algoritam usporedbe s
+različitih objekata na statičnoj slici. Jedna od njih je algoritam usporedbe s
 predloškom~\cite{web:opencv} (engl. \textit{Template Matching}). U ovom
-podpoglavlju dan je primjer korištenja takve metode na mirnoj slici. 
+podpoglavlju dan je primjer korištenja takve metode na statičnoj slici. 
 
 Algoritam usporedbe predloškom je metoda za pronalaženje područja na
 slici koji odgovaraju odnosno su slični uspoređenom predlošku. 
@@ -108,7 +111,7 @@ Identificiranje odgovarajućeg područja, radi se uspoređivanjem slike
 predloška s izvornom slikom. Pomicanjem predloška piksel po piksel po
 izvornoj slici s lijeva na desno, od gore prema dolje kao što je
 prikazano na slici~\ref{fig:tm2.jpg}. Na svakoj lokaciji, računa se
-vrijednosti koja predstavlja koliko dobro predložak odgovara izvornoj
+vrijednost koja predstavlja koliko dobro predložak odgovara izvornoj
 slici, odnosno koliko su slični.
 
 \begin{figure}[h]
@@ -138,40 +141,40 @@ se za pronalazak najvećih odnosno najmanjih vrijednosti koristi funkcija
 \label{fig:tm3.jpg}
 \end{figure}
 
-OpenCV funkcija \texttt{matchTemplate} sadržava nekoliko metoda za
+OpenCV funkcija \texttt{matchTemplate} sadrži nekoliko metoda za
 računanje rezultantne matrice. Slijede njihove jednadžbe:
 \begin{itemize}
     \item \textbf{CV\_TM\_SQDIFF} 
-        \begin{equation}
-            R\left ( x,y \right )= \sum_{{x}',{y}'} (T({x}',{y}')-I\left ( x+{x}',y+{y}' \right ))^{2}
-        \end{equation}
+    \begin{equation}
+         R\left ( x,y \right )= \sum_{{x}',{y}'} (T({x}',{y}')-I\left ( x+{x}',y+{y}' \right ))^{2}
+	\end{equation}
     \item \textbf{CV\_TM\_SQDIFF\_NORMED} 
-        \begin{equation}
-            R\left ( x,y \right )= {\frac{ \sum(T({x}',{y}')-I\left ( x+{x}',y+{y}' \right ))^{2}_}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}}
-        \end{equation}
+    \begin{equation}
+     R\left ( x,y \right )= \frac{\sum_{{x}',{y}'}(T({x}',{y}' - I\left ( x+{x}',y+{y}' \right ))^{2}}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}
+    \end{equation}
     \item \textbf{CV\_TM\_CCORR} 
-        \begin{equation}
-            R\left ( x,y \right )= \sum_{{x}',{y}'} (T({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}
-        \end{equation}
+    \begin{equation}
+     R\left ( x,y \right )= \sum_{{x}',{y}'} (T({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}
+    \end{equation}
     \item \textbf{CV\_TM\_CCORR\_NORMED} 
-        \begin{equation}
-            R\left ( x,y \right )= {\frac{ \sum(T({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}_}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}}
-        \end{equation}
+    \begin{equation}
+     R\left ( x,y \right ) = \frac{\sum_{{x}',{y}'}(T({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}
+    \end{equation}
     \item \textbf{CV\_TM\_CCOEFF} 
-        \begin{equation}
-            R\left ( x,y \right )= \sum_{{x}',{y}'} ({T}'({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}
-        \end{equation}
-        gdje je:
-        \begin{equation}
-            {T}'({x}',{y}')=T({x}',{y}')-1/(w\cdot h)\cdot \sum_{{x}'',{y}''}T({x}'',{y}'')
-        \end{equation}
-        \begin{equation}
-            I\left ( x+{x}',y+{y}' \right )=I\left ( x+{x}',y+{y}' \right )- \sum_{{x}'',{y}''}I\left ( x+{x}'',y+{y}'' \right ))^{2}
-        \end{equation}
+     \begin{equation}
+      R\left ( x,y \right )= \sum_{{x}',{y}'} ({T}'({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}
+     \end{equation}
+     gdje je:
+    \begin{equation}
+     {T}'({x}',{y}')=T({x}',{y}')-1/(w\cdot h)\cdot \sum_{{x}'',{y}''}T({x}'',{y}'')
+    \end{equation}
+    \begin{equation}
+      I\left ( x+{x}',y+{y}' \right )=I\left ( x+{x}',y+{y}' \right )- \sum_{{x}'',{y}''}I\left ( x+{x}'',y+{y}'' \right ))^{2}
+      \end{equation}
     \item \textbf{CV\_TM\_CCOEFF\_NORMED} 
-        \begin{equation}
-        R\left ( x,y \right )= {\frac{ \sum({T}'({x}',{y}')\cdot {I}'\left ( x+{x}',y+{y}' \right ))^{2}_}{\sqrt{\sum_{{x}',{y}'}{T}'({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}{I}'\left ( x+{x}',y+{y}' \right ))^{2}}}}    
-        \end{equation}
+    \begin{equation}
+      R\left ( x,y \right )= \frac{ \sum_{{x}',{y}'}({T}'({x}',{y}')\cdot {I}'\left ( x+{x}',y+{y}' \right ))^{2}}{\sqrt{\sum_{{x}',{y}'}{T}'({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}{I}'\left ( x+{x}',y+{y}' \right ))^{2}}}
+    \end{equation}
 \end{itemize}
 
 
@@ -254,5 +257,13 @@ waitKey(0);
 % subsubsection Primjer korištenje funkcije tt (end)
 
 % subsection Algoritam usporedbe predloškom (end)
+\subsection{Prepoznavanje znakovlja u pokretnoj slici} % (fold)
+
+Pokretna slika odnosno video je zapravo niz statičnih slika 
+koje se izmjenjuju određenom brzinom. Time se dobiva iluzija da se 
+radi o pokretnoj slici. Činjenica da se pokretna slika sastoji od
+niza statičnih slika olakšava prepoznavanje 
+znakova jer se iste metode mogu primjeniti i na pokretnu sliku. 
+Programi obično učitavaju svaku sliku ili sličicu (engl. \textit{frame}) i izvršavaju algoritam za pronalazak znaka.
 
 % section Tehnologija i teorija (end)

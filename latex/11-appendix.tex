@@ -10,16 +10,16 @@
 
 \begin{lstlisting}[caption={}]
 /* Osnovna ideja:
- * uspoređivanje slike predoslka (znak) sa svakom slicicom i pronalazak.
+ * usporedivanje slike predloska (znak) sa svakom slicicom i pronalazak.
  * Tamo gdje se predlozak i slicica podudaraju proglasimo znakom i 
  * nacratom pravokutnik.
  * Takav pristup daje puno lazno pozitivnih rezultata.
  * Taj problem pokusavamo rjesiti racunanjem udaljenosti izmedu 
- * trenutnog i prijasnjih slicica, te postavljamo prag ispod kojeg
+ * trenutne i prijasnjih slicica, te postavljamo prag ispod kojeg
  * pronadene lokacije proglasavamo znakom.
  */ 
 
-// OpenCV zaglavlja za korištenje openCV funkcija
+// OpenCV zaglavlja za koristenje openCV funkcija
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
@@ -56,7 +56,7 @@ int main( int argc, char** argv )
     Mat znak1, znak2, znak3, znak4;
     
     // ucitavanje izrezanih znakova u razlicitim velicinama
-    // trenutno se koristim samo znak2 
+    // trenutno se koristi samo znak2 
     znak1 = imread ("roi/01_roi.png");      
     znak2 = imread ("roi/02_roi.png");
     znak3 = imread ("roi/03_roi.png");
@@ -94,8 +94,8 @@ int main( int argc, char** argv )
     // inicijalizacija varijable za udaljenost izmedu tocaka rezultata
     int dist = 0;
     
-    // Ovo iznad je za prvi frame da imamo s cime usporedivat.
-    // Sada ponavljaj beskonacno za sve ostale slicice
+    // Iznad je za prvi frame da se moze usporediti
+    // Sada ponavlja beskonacno za sve ostale slicice
     for(;;) {        
         // ucitaj frame, postavi roi, prebaci u greyscale
         cap >> frame;              
@@ -121,7 +121,7 @@ int main( int argc, char** argv )
             if (size < 10) {
                 // racunaj udaljenost izmedu trenutne i prve tocke
                 dist = calcPointDist (maxLoc, vPoint.at(0));
-                // ako je udaljenost manja od 10 isrctaj znak
+                // ako je udaljenost manja od 10 iscrtaj znak
                 if (dist < 10) {
                     rectangle (groi, maxLoc, Point(maxLoc.x + znak2.cols, 
                     maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
@@ -130,9 +130,9 @@ int main( int argc, char** argv )
             }
             // Ako je vektor tocaka veci od 10 clanova
             else {
-                // racunaj udaljenost izmedu trenutnog i sedomog prije 
+                // racunaj udaljenost izmedu trenutnog i sedmog prije 
                 dist = calcPointDist (maxLoc, vPoint.at(size-7));  
-                // iscrtaj pravokutnik ako je udaljenost manja od 15 iscrtaj pravokutnik
+                // iscrtaj pravokutnik ako je udaljenost manja od 15
                 if (dist < 15) {
                     rectangle (groi, maxLoc, Point(maxLoc.x + znak2.cols, 
                     maxLoc.y + znak2.rows), Scalar::all(0), 2, 18, 0 );
