@@ -96,23 +96,25 @@ Princip rada zasniva se na dvije komponente:
 \end{itemize}
 
 Cilj metode je pronaći odgovarajuća mjesta. Na
-slici~\ref{fig:tm1.jpg} vidi se upotreba izvorne slike, slike predloška
-i prikaz krajnjeg rezultata metode usporedbe predloškom.
+slici~\ref{fig:tm1.jpg} vidi se izvorna slika I (lijevo), dva puta uvećana slike predloška T (sredina)
+i slika krajnjeg rezultata (desno) metode usporedbe predloškom.
+Slika krajnjeg rezultata istih je dimenzija kao izvorna slika te 
+je na njoj iscrtan pronađeni predložak crvenom bojom.
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=1]{figures/tm1.jpg}
-\caption{Prikaz izvorne slike, slike predloška i krajnjeg rezultata
-metode usporedbe predloškom}
+\caption{Prikaz izvorne slike I (lijevo), slike predloška T (sredina) i krajnjeg rezultata (desno)
+metode usporedbe predloškom.}
 \label{fig:tm1.jpg}
 \end{figure}
 
-Identificiranje odgovarajućeg područja, radi se uspoređivanjem slike
+Identificiranje odgovarajućeg područja odnosno pronalazak predloška na izvornoj slici, radi se uspoređivanjem slike
 predloška s izvornom slikom. Pomicanjem predloška piksel po piksel po
 izvornoj slici s lijeva na desno, od gore prema dolje kao što je
 prikazano na slici~\ref{fig:tm2.jpg}. Na svakoj lokaciji, računa se
 vrijednost koja predstavlja koliko dobro predložak odgovara izvornoj
-slici, odnosno koliko su slični.
+slici, odnosno koliko su slični. 
 
 \begin{figure}[h]
 \centering
@@ -141,37 +143,58 @@ se za pronalazak najvećih odnosno najmanjih vrijednosti koristi funkcija
 \label{fig:tm3.jpg}
 \end{figure}
 
-OpenCV funkcija \texttt{matchTemplate} sadrži nekoliko metoda za
+OpenCV funkcija \texttt{matchTemplate} sadrži nekoliko matematičkih funkcija za
 računanje rezultantne matrice. Slijede njihove jednadžbe:
 \begin{itemize}
-    \item \textbf{CV\_TM\_SQDIFF} 
+    \item \textbf{CV\_TM\_SQDIFF} funkcija računa matricu
+     rezultata metodom oduzimanjem kvadrata odnosno 
+     oduzimanjem slike
+     predloška od izvorne slike. Ograničenje funkcije je što
+     predložak mora biti kvadrat, odnosno imati jednake stranice.
     \begin{equation}
          R\left ( x,y \right )= \sum_{{x}',{y}'} (T({x}',{y}')-I\left ( x+{x}',y+{y}' \right ))^{2}
 	\end{equation}
-    \item \textbf{CV\_TM\_SQDIFF\_NORMED} 
+
+    \item \textbf{CV\_TM\_SQDIFF\_NORMED} funkcija je 
+    normalizirana verzija prethodne funkcije. 
     \begin{equation}
-     R\left ( x,y \right )= \frac{\sum_{{x}',{y}'}(T({x}',{y}' - I\left ( x+{x}',y+{y}' \right ))^{2}}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}
+     R\left ( x,y \right )= \frac{\sum_{{x}',{y}'}(T({x}',{y}') - I\left ( x+{x}',y+{y}' \right ))^{2}}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}
     \end{equation}
-    \item \textbf{CV\_TM\_CCORR} 
+    
+    \newpage
+    \item \textbf{CV\_TM\_CCORR} funkcija računa matricu rezultata
+    metodom unakrsne korelacije (engl. \textit{cross correlation}. 
+    Unakrsna korelacija je mjera sličnosti između dva signala gdje
+    je jednoj funkciji pridjeljeno vremensko kašnjenje.
+    
     \begin{equation}
      R\left ( x,y \right )= \sum_{{x}',{y}'} (T({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}
     \end{equation}
-    \item \textbf{CV\_TM\_CCORR\_NORMED} 
+    
+    \item \textbf{CV\_TM\_CCORR\_NORMED} funkcija je normalizirana 
+    verzija prethodne funkcije.
     \begin{equation}
      R\left ( x,y \right ) = \frac{\sum_{{x}',{y}'}(T({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}
     \end{equation}
-    \item \textbf{CV\_TM\_CCOEFF} 
-     \begin{equation}
+    
+    \item \textbf{CV\_TM\_CCOEFF} funkcija računa matricu 
+    rezultata računanjem korelacijskog koeficienta (engl.
+    \textit{correlation coefficient}) između dvije varijable 
+    koji je definiran kao kovarijanca dviju varijabli podjeljena
+    s produktom njihovih standardnih devijacija.
+    \begin{equation}
       R\left ( x,y \right )= \sum_{{x}',{y}'} ({T}'({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}
-     \end{equation}
+    \end{equation}
      gdje je:
     \begin{equation}
      {T}'({x}',{y}')=T({x}',{y}')-1/(w\cdot h)\cdot \sum_{{x}'',{y}''}T({x}'',{y}'')
     \end{equation}
     \begin{equation}
       I\left ( x+{x}',y+{y}' \right )=I\left ( x+{x}',y+{y}' \right )- \sum_{{x}'',{y}''}I\left ( x+{x}'',y+{y}'' \right ))^{2}
-      \end{equation}
-    \item \textbf{CV\_TM\_CCOEFF\_NORMED} 
+    \end{equation}
+      
+    \item \textbf{CV\_TM\_CCOEFF\_NORMED} funkcija je
+     normalizirana verzija prethodne funkcije.
     \begin{equation}
       R\left ( x,y \right )= \frac{ \sum_{{x}',{y}'}({T}'({x}',{y}')\cdot {I}'\left ( x+{x}',y+{y}' \right ))^{2}}{\sqrt{\sum_{{x}',{y}'}{T}'({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}{I}'\left ( x+{x}',y+{y}' \right ))^{2}}}
     \end{equation}
