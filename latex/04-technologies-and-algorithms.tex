@@ -5,21 +5,21 @@
 \label{sec:Tehnologija i teorija}
 
 \subsection{Korištene tehnologije}
-U ovom poglavlju dan je pregled osnovnih tehnologija koje su korištene za izgradnju završnog rada. Biblioteka OpenCV te korištena radna okolina, odnosno operacijski sustav i prevoditelj (engl. \textit{compiler}).
+U ovom poglavlju dan je pregled osnovnih tehnologija koje su korištene za izgradnju završnog rada. OpenCV biblioteka te korištena radna okolina, odnosno operacijski sustav i prevoditelj (engl. \textit{compiler}).
 
-\subsubsection{Biblioteka OpenCV} % (fold)
+\subsubsection{OpenCV biblioteke} % (fold)
 \label{sub:Biblioteka OpenCV}
 
 OpenCV~\cite{opencv_library} (engl. \textit{Open Source Computer Vison})
-je biblioteka funkcija odnosno algoritama za matematičku obradu slike i
+skup biblioteka funkcija odnosno algoritama za matematičku obradu slike i
 računalni vid.  Objavljen je pod BSD licencom i stoga je slobodan za
 akademske i komercijalne uporabe. Sadrži C++, C, Python i Java sučelja i
 podržava Windows, Linux, Mac OS, iOS i Android platforme. OpenCV je
 dizajniran za računalnu učinkovitost, sa snažnim naglaskom na stvarno
-vremenske aplikacije. Biblioteka je napisana u optimiziranom C/C++ kodu
-te može iskoristiti prednosti višejezgrenog procesiranja. Ako se koristi
-s OpenCL (engl. \textit{Open Computing Language}) bibliotekom OpenCV
-može iskoristi prednosti hardverskog ubrzanja osnovne računalne
+vremenske aplikacije. Biblioteke su napisane u optimiziranom C/C++ kodu
+te mogu iskoristiti prednosti višejezgrenog procesiranja. Ako se koriste
+s OpenCL (engl. \textit{Open Computing Language}) OpenCV biblioteke 
+mogu iskoristi prednosti hardverskog ubrzanja osnovne računalne
 platforme.
 
 Usvojen diljem svijeta, OpenCV ima zajednicu korisnika veću od 47 tisuća
@@ -83,6 +83,8 @@ Postoji više metoda odnosno algoritama koje se koriste za prepoznavanje
 različitih objekata na statičnoj slici. Jedna od njih je algoritam usporedbe s
 predloškom~\cite{web:opencv} (engl. \textit{Template Matching}). U ovom
 podpoglavlju dan je primjer korištenja takve metode na statičnoj slici. 
+Metoda \texttt{matchTemplate} implementirana je u OpenCV \texttt{imgproc}
+biblioteci.
 
 Algoritam usporedbe predloškom je metoda za pronalaženje područja na
 slici koji odgovaraju odnosno su slični uspoređenom predlošku. 
@@ -128,8 +130,11 @@ vrijednosti u matricu rezultata R. Svaka lokacija (x, y) u matrici R
 sadrži vrijednost koja govori koliko je na toj lokaciji predložak
 sličan izvornoj slici. 
 
-Slika~\ref{fig:tm3.jpg} prikazuje rezultate R pomicanja predloška po
-izvornoj slici. Korištena metoda je \texttt{TM\_CCORR\_NORMED}.
+\newpage
+"Zamućena" Slika~\ref{fig:tm3.jpg} prikazuje rezultate funkcije R(x,y) pomicanja
+predloška po izvornoj slici. Za računanje matrice rezultata korištena je normalizirana metoda
+unakrsne korelacije \texttt{TM\_CCORR\_NORMED} čija je
+formula dana pod~\ref{f1}.
 Najsvjetlija mjesta pokazuju odgovarajuće vrijednosti. Kao što se vidi,
 mjesto obilježeno crvenim krugom je ono s najvišom vrijednosti. U praksi
 se za pronalazak najvećih odnosno najmanjih vrijednosti koristi funkcija
@@ -143,7 +148,7 @@ se za pronalazak najvećih odnosno najmanjih vrijednosti koristi funkcija
 \label{fig:tm3.jpg}
 \end{figure}
 
-OpenCV funkcija \texttt{matchTemplate} sadrži nekoliko matematičkih funkcija za
+Osim metode unakrsne korelacije \texttt{TM\_CCORR\_NORMED} OpenCV funkcija \texttt{matchTemplate} sadrži još nekoliko matematičkih funkcija za
 računanje rezultantne matrice. Slijede njihove jednadžbe:
 \begin{itemize}
     \item \textbf{CV\_TM\_SQDIFF} funkcija računa matricu
@@ -161,9 +166,8 @@ računanje rezultantne matrice. Slijede njihove jednadžbe:
      R\left ( x,y \right )= \frac{\sum_{{x}',{y}'}(T({x}',{y}') - I\left ( x+{x}',y+{y}' \right ))^{2}}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}
     \end{equation}
     
-    \newpage
     \item \textbf{CV\_TM\_CCORR} funkcija računa matricu rezultata
-    metodom unakrsne korelacije (engl. \textit{cross correlation}. 
+    metodom unakrsne korelacije (engl. \textit{cross correlation}). 
     Unakrsna korelacija je mjera sličnosti između dva signala gdje
     je jednoj funkciji pridjeljeno vremensko kašnjenje.
     
@@ -174,6 +178,7 @@ računanje rezultantne matrice. Slijede njihove jednadžbe:
     \item \textbf{CV\_TM\_CCORR\_NORMED} funkcija je normalizirana 
     verzija prethodne funkcije.
     \begin{equation}
+    \label{f1}
      R\left ( x,y \right ) = \frac{\sum_{{x}',{y}'}(T({x}',{y}')\cdot I\left ( x+{x}',y+{y}' \right ))^{2}}{\sqrt{\sum_{{x}',{y}'}T({x}',{y}')^{2}\cdot \sum_{{x}',{y}'}I\left ( x+{x}',y+{y}' \right ))^{2}}}
     \end{equation}
     
@@ -288,5 +293,13 @@ radi o pokretnoj slici. Činjenica da se pokretna slika sastoji od
 niza statičnih slika olakšava prepoznavanje 
 znakova jer se iste metode mogu primjeniti i na pokretnu sliku. 
 Programi obično učitavaju svaku sliku ili sličicu (engl. \textit{frame}) i izvršavaju algoritam za pronalazak znaka.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.4]{figures/dijagramtoka2.pdf}
+\caption{Dijagram toka za prepoznavanje znakovlja u pokretnoj slici}
+\label{fig:dijagramtoka.pdf}
+\end{figure}
 
 % section Tehnologija i teorija (end)

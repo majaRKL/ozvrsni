@@ -68,12 +68,31 @@ int main (int argc, char *argv[])
 Izlistanje koda~\ref{lstUcit} prikazuje primjer učitavanja videa i
 učitavanje znaka upotrebom klase \texttt{VideoCapture} i funkcije
 \texttt{imread} koji su uključeni dodavanjem biblioteke
-\texttt{imgproc.hpp}. Kreiranom objektu \texttt{cap} predana je putanja
+\texttt{imgproc.hpp}. 
+Slika \ref{fig:lstU} prikazuje učitan video i znak. 
+Kreiranom objektu \texttt{cap} predana je putanja
 do videa kojeg treba učitati. Ukoliko video nije uspješno učitan program
 završava i vraća \texttt{-1}. Kreiranim objektima \texttt{znak1},
 \texttt{znak2}, \texttt{znak3}, \texttt{znak4} pridružene su slike
 učitane upotrebom funkcije \texttt{imread} kojoj je predana putanja do
 slike koju treba učitati.
+
+\begin{figure}[!htb]
+\minipage{0.05\textwidth}
+\endminipage\hfill
+\minipage{0.5\textwidth}
+    \includegraphics[width=\linewidth]{figures/scena.png}
+\endminipage\hfill
+\minipage{0.2\textwidth}
+\endminipage\hfill
+\minipage{0.2\textwidth}
+    \includegraphics[width=\linewidth]{figures/znak.png}
+\endminipage\hfill
+\minipage{0.05\textwidth}
+\endminipage\hfill
+\caption{Prikaz učitanog videa (lijevo) i učitanog znaka (desno)}
+\label{fig:lstU}
+\end{figure}
 
 % subsubsection Učitavanje videa vožnje i učitavanje znaka (end)
 
@@ -96,7 +115,8 @@ regije interesa}]
 \end{lstlisting}
 
 Izlistanje koda~\ref{lstRoi} prikazuje upotrebu funkcije
-\texttt{cvtColor} kojom se učitani znak prebacuje u sliku sivih tonova.
+\texttt{cvtColor} kojom se učitani znak prebacuje u sliku sivih tonova
+kao što se vidi na slici \ref{fig:lstR}
 Zatim se učitava sličica u objekt \texttt{frame} iz objekta
 \texttt{cap}. Tada se kreira objekt \texttt{rect} pomoću funkcije
 \texttt{Rect()} kojom definiramo pravokutnik koordinatama gornjeg
@@ -105,6 +125,24 @@ definiranje regije interesa nad učitanom sličicom odnosno objektom
 \texttt{frame} te se regija interesa sprema u objekt \texttt{roi}.
 Regija interesa se kasnije upotrebljava u algoritmu usporedbe s
 predloškom.
+
+\begin{figure}[!htb]
+\minipage{0.05\textwidth}
+\endminipage\hfill
+\minipage{0.2\textwidth}
+    \includegraphics[width=\linewidth]{figures/znak.png}
+\endminipage\hfill
+\minipage{0.2\textwidth}
+\endminipage\hfill
+\minipage{0.2\textwidth}
+    \includegraphics[width=\linewidth]{figures/znakg.png}
+\endminipage\hfill
+\minipage{0.05\textwidth}
+\endminipage\hfill
+\caption{Prikaz prebacivanja učitanog znak u sliku sivih tonova}
+\label{fig:lstR}
+\end{figure}
+
 
 % subsubsection Postavljanje regije interesa (end)
 
@@ -123,6 +161,9 @@ algoritma usporedbe s predloškom}]
     // pretvaranje roi u greyscale
     cvtColor(roi, groi, CV_BGR2GRAY);      
     // trazenje znaka u greyscale groi i spremanje u results
+    // matematicke funkcije za racunanje rezultatne matrice
+    // 0: SQDIFF, 1: SQDIFF NORMED, 2: TM CCORR,  
+    // 3: TM CCORR NORMED, 4: TM COEFF, 5: TM COEFF NORMED
     matchTemplate (groi, znak2, results, 5);
     // normaliziranje rezultata
     normalize (results, results, 0, 1, NORM_MINMAX, -1);
@@ -139,13 +180,38 @@ funkciji \texttt{matchTemplate()} potrebno je kreirati matricu/sliku u
 koju će funkcija spremati rezultate. Matrica \texttt{results} se kreira
 ovisno o veličini matrica \texttt{roi} i \texttt{znak2} kao što
 prikazuje izlistanje koda~\ref{lstTemp} Kako su svi parametri koje
-funkcija \texttt{matchTemplate()} prima kreirani, slijedi njeno pozivanje.
+funkcija \texttt{matchTemplate()} prima kreirani, slijedi njeno pozivanje. Predani parametri se vide i na slici \ref{fig:mt}
+Funkcija je pozvana s zadnjim parametrom 5 koji označava da se korsiti 
+matematička funkcija \texttt{TM\_CCORR\_NORMED} za računanje rezultantne
+matrice. Korištena funkcija slične piksele (pozitivne rezultate) prikazuje
+svijetlom nijansom sive boje.
 Rezultat rada algoritma je spremljen u \texttt{results} te se takvi
 rezultati normaliziraju korištenjem funkcije \texttt{normalize()}. Zatim
 slijedi lociranje najvećih i najmanjih vrijednosti piksela u rezultantnoj
 matrici upotrebom funkcije \texttt{minMaxLoc()}. Korištena metoda
 usporedbe sprema najbolje rezultate kao maksimalne vrijednosti i zato se
 \texttt{maxLoc} sprema u vektor točaka za daljnju obradu.
+
+\begin{figure}[!htb]
+\minipage{0.35\textwidth}
+    \includegraphics[width=\linewidth]{figures/mt-groi.png}
+\endminipage\hfill
+\minipage{0.75\textwidth}
+\endminipage\hfill
+\minipage{0.05\textwidth}
+    \includegraphics[width=\linewidth]{figures/znakg.png}
+\endminipage\hfill
+\minipage{0.75\textwidth}
+\endminipage\hfill
+\minipage{0.35\textwidth}
+    \includegraphics[width=\linewidth]{figures/mt-results.png}
+\endminipage\hfill
+
+\caption{Prikaz predanih parametra \texttt{matchTemplate} funkciji:
+regija interesa (lijevo), predložak (sredina)
+i dobiveni rezultata (desno)}
+\label{fig:mt}
+\end{figure}
 
 \newpage
 \subsubsection{Eliminacija lažno pozitivnih rezultata} % (fold)
@@ -154,7 +220,8 @@ usporedbe sprema najbolje rezultate kao maksimalne vrijednosti i zato se
 Zbog velike količine lažno pozitivnih rezultata osmišljen je kod za
 eliminaciju istih računanjem geometrijske udaljenosti između dvije
 točke. Kod za računanje geometrijske udaljenosti je prikazan u ispisu
-koda~\ref{lstDist} Pretpostavka je da se znak pojavljuje postepeno što
+koda~\ref{lstDist}, a primjer lažno detektiranog znaka se vidi na slici
+\ref{fig:ld1} Pretpostavka je da se znak pojavljuje postepeno što
 znači da bi rezultati trebali biti u blizini prošlog rezultata odnosno ne
 bi trebali iznenadno pojavljivati na velikim udaljenostima između
 uzastopnih sličica. 
@@ -236,6 +303,22 @@ lažno pozitivnih rezultata}]
     }
 }
 \end{lstlisting}
+
+\begin{figure}[!htb]
+\minipage{0.15\textwidth}
+\endminipage\hfill
+\minipage{0.5\textwidth}
+    \includegraphics[width=\linewidth]{figures/ld1.png}
+\endminipage\hfill
+\minipage{0.05\textwidth}
+    \includegraphics[width=\linewidth]{figures/znakg.png}
+\endminipage\hfill
+\minipage{0.15\textwidth}
+\endminipage\hfill
+\caption{Prikaz krivo detektiranog znaka (lažno pozitivan rezultat)
+(lijevo) i znaka koji se traži (desno)}
+\label{fig:ld1}
+\end{figure}
 
 
 % subsubsection Eliminacija lažno pozitivnih rezultata (end)
